@@ -1,3 +1,12 @@
+#define BLUE_LED 6
+#define GREEN_LED 3
+#define RED_LED 5
+#define SWITCH1 12
+#define SWITCH2 13
+
+#define FADE_AMOUNT 5
+#define TIME_CONSTANT 6000
+
 enum State {
   ON,
   OFF,
@@ -7,20 +16,22 @@ enum State {
 };
 
 State ledState;
+int greenLEDBrightness, blueLEDBrightness;
 
 
 void setup() {
   // put your setup code here, to run once:
   ledState = OFF;
-  pinMode(6, OUTPUT); // BLUE LED
-  pinMode(3, OUTPUT); // GREEN LED
-  pinMode(5, OUTPUT); // RED LED
-  pinMode(12, INPUT); // Switch 1
-  pinMode(13, INPUT); // Switch 4
+  greenLEDBrightness = 255;
+  blueLEDBrightness = 255;
+  pinMode(BLUE_LED, OUTPUT); // BLUE
+  pinMode(GREEN_LED, OUTPUT); // GREEN
+  pinMode(RED_LED, OUTPUT); // RED
+  pinMode(SWITCH1, INPUT); // Switch 1
+  pinMode(SWITCH2, INPUT); // Switch 2
   Serial.begin(9600);  // initialize serial communication at 9600 bits per second
 
 }
-
 
 // the loop routine runs over and over again forever:
 void usePotentiometer() {
@@ -73,18 +84,39 @@ void loop() {
   if (ledState == ON) {
     // put your main code here, to run repeatedly:
     
-    digitalWrite(13, HIGH); // sets the digital pin 13 on
+    digitalWrite(RED_LED, HIGH); // sets the digital pin 13 on
     delay(1000);            // waits for a second
-    digitalWrite(13, LOW);  // sets the digital pin 13 off
+    digitalWrite(RED_LED, LOW);  // sets the digital pin 13 off
     delay(1000);            // waits for a second 
   }
 
   else if (ledState == OFF) {
-    digitalWrite(13, LOW);
+    digitalWrite(RED_LED, LOW); // Turn red off
   }
 
   else if (ledState == SLEEP) {
 
+    
+    
+  }
+  else if (ledState == RUN) {
+    if (greenLEDBrightness > 0) {
+      analogWrite(GREEN_LED, greenLEDBrightness);
+      greenLEDBrightness =  int(greenLEDBrightness - 255 * (1 - exp(-1.0 / TIME_CONSTANT * 30)));
+      delay(30); // Fade with time constant of 6 seconds
+    }
+    else if (greenLEDBrightness <= 0) {
+      digitalWrite(GREEN_LED, HIGH);
+      delay(500);
+      digitalWrite(GREEN_LED, LOW);
+      delay(500);
+      digitalWrite(GREEN_LED, LOW);
+      delay(500);
+      greenLEDBrightness = 255;
+    }
+  }
+  else if (ledState == DIAGNOSTIC) {
+    
   }
   
 }
