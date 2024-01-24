@@ -12,11 +12,11 @@ State ledState;
 void setup() {
   // put your setup code here, to run once:
   ledState = OFF;
-  pinMode(13, OUTPUT); // BLUE
-  pinMode(12, OUTPUT); // GREEN
-  pinMode(11, OUTPUT); // RED
-  pinMode(10, OUTPUT); // Switch 1
-  pinMode(9, OUTPUT); // Switch 2
+  pinMode(6, OUTPUT); // BLUE LED
+  pinMode(3, OUTPUT); // GREEN LED
+  pinMode(5, OUTPUT); // RED LED
+  pinMode(12, INPUT); // Switch 1
+  pinMode(13, INPUT); // Switch 4
   Serial.begin(9600);  // initialize serial communication at 9600 bits per second
 
 }
@@ -37,6 +37,16 @@ void usePotentiometer() {
 
   delay(1);  // delay in between reads for stability
 }
+
+/* void fade (int time_per, int num_steps){
+  int brightness = 0; // This can be 0-255
+  int light_interval = num_steps / 255;
+  for(int i = 0; i < num_steps; i++){
+    brightness += light_interval;
+    set_brightness(brightness);
+    delay(time_per/num_steps);
+  }
+} */
 
 
 void loop() {
