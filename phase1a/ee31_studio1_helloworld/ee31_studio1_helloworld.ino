@@ -21,6 +21,24 @@ void setup() {
 
 }
 
+
+// the loop routine runs over and over again forever:
+void usePotentiometer() {
+  //A5 = Potentiometer 1
+  //A4 = Potentiometer 2
+
+
+  // Start reading potentiometer values
+  int potentiometer1 = analogRead(A5);
+  int potentiometer2 = analogRead(A4);
+
+  //Lets just print it for now
+  Serial.println(potentiometer1);
+
+  delay(1);  // delay in between reads for stability
+}
+
+
 void loop() {
 
   if (Serial.available() > 0) {
