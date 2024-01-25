@@ -7,6 +7,8 @@
 #define TIME_CONSTANT 6000
 #define BAUD_RATE 9600
 
+//EE31 Phase 1
+
 enum State {
   ON,
   OFF,
