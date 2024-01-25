@@ -88,7 +88,7 @@ void loop() {
 
   if (Serial.available() > 0) {
     // if data is available to read
-    String inputWord = Serial.readStringUntil('\n');  // read the word until a space is encountered
+    String inputWord = Serial.readStringUntil('\n');
     Serial.print("You entered: ");
     Serial.println(inputWord);  // print the entered word
     if (inputWord.equals("ON")) {
