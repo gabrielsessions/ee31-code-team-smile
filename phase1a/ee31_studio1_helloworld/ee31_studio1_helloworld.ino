@@ -5,6 +5,7 @@
 #define SWITCH2 3
 #define FADE_AMOUNT 5
 #define TIME_CONSTANT 6000
+#define BAUD_RATE 9600
 
 enum State {
   ON,
@@ -31,7 +32,7 @@ void setup() {
   pinMode(SWITCH2, INPUT); // Switch 2
   attachInterrupt(digitalPinToInterrupt(SWITCH1), trigSw1, RISING);
   attachInterrupt(digitalPinToInterrupt(SWITCH2), trigSw2, FALLING);
-  Serial.begin(9600);  // initialize serial communication at 9600 bits per second
+  Serial.begin(BAUD_RATE);  // initialize serial communication at 9600 bits per second
   
 }
 /* 
@@ -69,10 +70,6 @@ void fade (int time_per, int num_steps, int led){
 
 void setLedState(bool on, int led){
   if(on){
-    /* Serial.print("brightness:");
-    Serial.println((global_brightness*255) / 100);
-    Serial.println(global_brightness); */
-
     analogWrite(led, global_brightness*2);
   }else{
     analogWrite(led, 0);
@@ -137,7 +134,7 @@ void loop() {
   }
   else if (ledState == RUN) {
     //Fade LED for 6s
-    fade (6000, 255, GREEN_LED);
+    fade (TIME_CONSTANT, 255, GREEN_LED);
 
     //Blink twice for duty cycle of 0.5s
     setLedState(true, GREEN_LED);
@@ -154,9 +151,9 @@ void loop() {
     int num_problems = 5;
     for(int i = 0; i < num_problems; i++){
       setLedState(true, RED_LED);
-      delay(100);
-      setLedState(true, RED_LED);
-      delay(100);
+      delay(500);
+      setLedState(false, RED_LED);
+      delay(500);
     }
   }
   
