@@ -110,11 +110,11 @@ void loop() {
 
 
 
-  if (ledState == ON) {    
+  if (ledState == ON) {
     setLedState(true, RED_LED);
-    delay(50);            // waits for a second
+    delay((potentiometer2 / 2) + 5);            // waits for a second
     setLedState(false, RED_LED);
-    delay(50);            // waits for a second 
+    delay((potentiometer2 / 2) + 5);            // waits for a second 
   }
 
   else if (ledState == OFF) {
@@ -125,11 +125,11 @@ void loop() {
   Blinks @ 4 Hz for 1 sec, Fade for 1 sec.  Last blink fades to off over Fade.
 */
   else if (ledState == SLEEP) {
-    for(int i = 0; i < 4; i++){
+    for(int i = 0; i < blueLEDInterval; i++){
       setLedState(true, BLUE_LED);
-      delay(125);
+      delay(1000 / blueLEDInterval);
       setLedState(false, BLUE_LED);
-      delay(125);
+      delay(1000 / blueLEDInterval);
     }
     fade (1000, 255, BLUE_LED);
     ledState = OFF;
