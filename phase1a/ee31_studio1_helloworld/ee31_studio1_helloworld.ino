@@ -151,10 +151,11 @@ void loop() {
     int num_problems = 5;
     for(int i = 0; i < num_problems; i++){
       setLedState(true, RED_LED);
-      delay(500);
+      delay(250);
       setLedState(false, RED_LED);
-      delay(500);
+      delay(250);
     }
+    delay(1500);
   }
   
 }
