@@ -15,6 +15,9 @@ void loop() {
   
   Serial.print("Battery Voltage: ");
   Serial.println(voltage);
+  if (voltage < 7.25) {
+    Serial.println("LOW BATTERY WARNING");
+  }
   
   delay(1000); // Delay a second between measurements
 }
