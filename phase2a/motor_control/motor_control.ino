@@ -1,13 +1,13 @@
-#define PORT1 5
-#define PORT2 9
+#define MOTOR1A 5
+#define MOTOR1B 9
 
 #define MOTOR2A 3
 #define MOTOR2B 10
 
 void setup() {
   // motor 0 and 1
-  pinMode(PORT1, OUTPUT);
-  pinMode(PORT2, OUTPUT);
+  pinMode(MOTOR1A, OUTPUT);
+  pinMode(MOTOR1B, OUTPUT);
   pinMode(MOTOR2A, OUTPUT);
   pinMode(MOTOR2B, OUTPUT);
   //enables
@@ -20,14 +20,21 @@ void setup() {
   Serial.println("Hello, World!"); */
   //digitalWrite(PORT2, LOW);
   //analogWrite(PORT1, 100);
-  digitalWrite(PORT1, LOW);
-  digitalWrite(PORT2, HIGH);
-  digitalWrite(MOTOR2A, HIGH);
-  digitalWrite(MOTOR2B, LOW);
+  
   
 }
 
 void loop() {
+  digitalWrite(MOTOR1A, LOW);
+  digitalWrite(MOTOR1B, HIGH);
+  digitalWrite(MOTOR2A, HIGH);
+  digitalWrite(MOTOR2B, LOW);
+  delay(5000);
+  digitalWrite(MOTOR1A, HIGH);
+  digitalWrite(MOTOR1B, LOW);
+  digitalWrite(MOTOR2A, LOW);
+  digitalWrite(MOTOR2B, HIGH);
+  delay(5000);
   // put your main code here, to run repeatedly:
   
  /*  if (Serial.available() > 0) {
