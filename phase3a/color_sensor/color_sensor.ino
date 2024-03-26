@@ -24,4 +24,20 @@ void loop() {
   Serial.println(val);
   delay(100);
 
+  if (val >= 950) {
+    Serial.print(" BLACK ");
+  } 
+  else if (val >= 930) {
+    Serial.print(" RED ");
+  }
+  else if (val >= 900) {
+    Serial.print(" BLUE ");
+  }
+  else if (val >= 800) {
+    Serial.print(" YELLOW ");
+  }
+  else {
+    Serial.print(" UNKNOWN ");
+  }
+
 }
