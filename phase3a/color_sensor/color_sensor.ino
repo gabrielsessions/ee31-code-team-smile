@@ -10,10 +10,10 @@ void setup() {
 }
 
 
-// 940 - 950 for RED
-// 900 - 910 for BLUE
-// 960 - 970 for YELLOW
-// 990 - 1000 for BLACK
+// 180 - 220 for RED
+// 130 - 180 for BLUE
+// 220 - 260 for YELLOW
+// Below 130 for BLACK
 
 
 // 930 RED, 970 BLUE, 950 YELLOW
@@ -24,16 +24,16 @@ void loop() {
   Serial.println(val);
   delay(100);
 
-  if (val >= 950) {
+  if (val < 130) {
     Serial.print(" BLACK ");
   } 
-  else if (val >= 930) {
+  else if (val < 180) {
+    Serial.print(" BlUE ");
+  }
+  else if (val < 220) {
     Serial.print(" RED ");
   }
-  else if (val >= 900) {
-    Serial.print(" BLUE ");
-  }
-  else if (val >= 800) {
+  else if (val < 260) {
     Serial.print(" YELLOW ");
   }
   else {
