@@ -25,6 +25,7 @@ int port = 80;
 
 WiFiClient wifi;
 WebSocketClient client = WebSocketClient(wifi, serverAddress, port);
+String clientID = "4A9EDB0160D5";
 int status = WL_IDLE_STATUS;
 int count = 0;
 
@@ -51,16 +52,25 @@ void setup() {
 void loop() {
   Serial.println("starting WebSocket client");
   client.begin();
+  client.beginMessage(TYPE_TEXT);
+  client.print(clientID);
+  client.endMessage();
 
   while (client.connected()) {
-    Serial.print("Sending hello ");
-    Serial.println(count);
+    if (count > 6000) {
+      count = 0;
+    }
+    if (count % 100 == 0) {
+      Serial.print("Sending hello ");
+      Serial.println(count);
 
-    // send a hello #
-    client.beginMessage(TYPE_TEXT);
-    client.print("hello ");
-    client.print(count);
-    client.endMessage();
+      // send a hello #
+      client.beginMessage(TYPE_TEXT);
+      client.print("hello ");
+      client.print(count);
+      client.endMessage();
+    }
+   
 
     // increment count for next message
     count++;
@@ -73,9 +83,16 @@ void loop() {
       Serial.println(client.readString());
     }
 
-    // wait 5 seconds
-    delay(5000);
+    // wait 10ms
+    delay(10);
   }
 
   Serial.println("disconnected");
+
+  // put your main code here, to run repeatedly:
+  int val = analogRead(A0);
+  Serial.println(val);
+  delay(100);
+
+  
 }
