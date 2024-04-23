@@ -28,10 +28,10 @@ GPIO PARAMETERS
 #define TAIL_LIGHTS 13
 
 //ANALOG PINS
-#define BATT_STATUS A5
-#define AMBIENT_LIGHT A4
-#define COLOR_SENSE A3
-#define COLL_DETECT A2
+#define BATT_STATUS A3
+#define AMBIENT_LIGHT A2
+#define COLOR_SENSE A5
+#define COLL_DETECT A4
 
 
 /* GLOBAL CONFIG - TO BE REPLACED */
@@ -319,7 +319,7 @@ String getColorString(){
 
 void printDebug(){
   Serial.print("Detected Color: ");
-  Serial.print(getColorString());
+  Serial.print(getColorRaw());
   /* if(getColor() == 0){
     Serial.print("Black");
   }else if(getColor() == 1){
