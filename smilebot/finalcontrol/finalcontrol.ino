@@ -7,9 +7,9 @@
 GPIO PARAMETERS 
 */
 
-#define STATUSRED 13
+#define STATUSRED 8
 #define STATUSBLUE 12
-#define STATUSYELLOW 8
+#define STATUSYELLOW 7
 
 #define MOTOR1A 11
 #define MOTOR1B 10
@@ -22,10 +22,10 @@ GPIO PARAMETERS
 
 #define BUZZER 3
 
-#define LEFT_TS 2
+#define LEFT_TS 0
 #define RIGHT_TS 1
-#define HEAD_LIGHTS 0
-#define TAIL_LIGHTS 7
+#define HEAD_LIGHTS 2
+#define TAIL_LIGHTS 13
 
 //ANALOG PINS
 #define BATT_STATUS A5
@@ -368,7 +368,7 @@ void runDebugSequence(){
   
 
   //Blink left ts
-  for(int i = 0; i < 3; i++){
+  for(int i = 0; i < 10; i++){
     digitalWrite(LEFT_TS, HIGH);
     delay(100);
     digitalWrite(LEFT_TS, LOW);
@@ -376,7 +376,7 @@ void runDebugSequence(){
   }
 
   //Blink right ts
-  for(int i = 0; i < 3; i++){
+  for(int i = 0; i < 10; i++){
     digitalWrite(RIGHT_TS, HIGH);
     delay(100);
     digitalWrite(RIGHT_TS, LOW);
