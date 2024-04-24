@@ -39,10 +39,10 @@ int ambientThreshold = 95;
 int buzzerTone = 128;
 int battThreshold = 4;
 
-int blackThreshold = 130;
-int blueThreshold = 180;
-int redThreshold = 220;
-int yellowThreshold = 260;
+int blackThreshold = 110;
+int blueThreshold = 120;
+int redThreshold = 155;
+int yellowThreshold = 250;
 
 int turn_90_time = 1000;
 
@@ -120,10 +120,17 @@ void setup() {
   Serial.print("IP Address: ");
   Serial.println(ip); */
   runDebugSequence();
+  digitalWrite(HEAD_LIGHTS, HIGH);
+  digitalWrite(TAIL_LIGHTS, HIGH);
+  setMotor(1, 1, 255);
+  setMotor(2, 0, 255);
+  
 }
 
 void loop() {
   printDebug();
+  delay(1000);
+  
   /* Serial.println("starting WebSocket client");
   client.begin();
   client.beginMessage(TYPE_TEXT);
@@ -318,29 +325,21 @@ String getColorString(){
 
 
 void printDebug(){
-  Serial.print("Detected Color: ");
-  Serial.print(getColorRaw());
-  /* if(getColor() == 0){
-    Serial.print("Black");
-  }else if(getColor() == 1){
-    Serial.print("Blue");
-  }else if(getColor() == 2){
-    Serial.print("Red");
-  }else if(getColor() == 3){
-    Serial.print("Yellow");
-  }else{
-    Serial.print("Unknown");
-  } */
+  Serial.print("RAW Color: ");
+  Serial.println(getColorRaw());
+  Serial.print("Guess Color: ");
+  Serial.println(getColorString());
 
-  Serial.print("Ambient Light: \n");
-  Serial.print(getAmbient());
+
+  /* Serial.println("Ambient Light:");
+  Serial.println(getAmbient());
   
-  Serial.print("Collision Detection: \n");
-  Serial.print(getCollisDetect());
+  Serial.println("Collision Detection:");
+  Serial.println(getCollisDetect());
 
-  Serial.print("Battery voltage\n");
-  Serial.print(getBatVoltage());
-  delay(1000);
+  Serial.println("Battery voltage");
+  Serial.println(getBatVoltage()); */
+  
 
 }
 
