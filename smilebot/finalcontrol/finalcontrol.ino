@@ -22,8 +22,8 @@ GPIO PARAMETERS
 
 #define BUZZER 3
 
-#define LEFT_TS 0
-#define RIGHT_TS 1
+#define LEFT_TS 1
+#define RIGHT_TS 0
 #define HEAD_LIGHTS 2
 #define TAIL_LIGHTS 13
 
@@ -35,7 +35,7 @@ GPIO PARAMETERS
 
 
 /* GLOBAL CONFIG - TO BE REPLACED */
-int ambientThreshold = 95;
+int ambientThreshold = 115;
 int buzzerTone = 128;
 int battThreshold = 4;
 
@@ -266,8 +266,8 @@ void setBuzzer(bool on){
 
 int getBatVoltage(){
   int sensorValue4V = analogRead(BATT_STATUS);
-  return sensorValue4V;
-  //return sensorValue4V * (Vref / 1023.0);
+  //return sensorValue4V;
+  return sensorValue4V * (Vref / 1023.0);
 }
 
 bool isBatLow(){
@@ -325,25 +325,41 @@ String getColorString(){
 
 
 void printDebug(){
-  Serial.print("RAW Color: ");
+  /* Serial.print("RAW Color: ");
   Serial.println(getColorRaw());
   Serial.print("Guess Color: ");
-  Serial.println(getColorString());
+  Serial.println(getColorString()); */
 
 
   /* Serial.println("Ambient Light:");
-  Serial.println(getAmbient());
+  Serial.println(getAmbient()); */
   
   Serial.println("Collision Detection:");
-  Serial.println(getCollisDetect());
-
-  Serial.println("Battery voltage");
+  //Serial.println(getCollisDetect());
+  Serial.println(analogRead(A0));
+  /* Serial.println("Battery voltage");
   Serial.println(getBatVoltage()); */
   
 
 }
 
 void runDebugSequence(){
+  analogWrite(BUZZER, 100);
+  delay(50);
+  analogWrite(BUZZER, 120);
+  delay(50);
+  analogWrite(BUZZER, 80);
+  delay(50);
+  analogWrite(BUZZER, 120);
+  delay(100);
+  analogWrite(BUZZER, 150);
+  delay(100);
+  analogWrite(BUZZER, 160);
+  delay(100);
+  analogWrite(BUZZER, 170);
+  delay(100);
+  analogWrite(BUZZER, 180);
+  delay(1000);
   //turn on head lights and tail lights
   digitalWrite(HEAD_LIGHTS, HIGH);
   digitalWrite(TAIL_LIGHTS, HIGH);
