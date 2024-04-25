@@ -17,8 +17,8 @@
 
 ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
 /////// WiFi Settings ///////
-char ssid[] = "junior";
-char pass[] = "designdesign";
+char ssid[] = "tufts_eecs";
+char pass[] = "foundedin1883";
 
 char serverAddress[] = "34.173.203.110";  // server address
 int port = 80;
@@ -37,6 +37,7 @@ void setup() {
 
     // Connect to WPA/WPA2 network:
     status = WiFi.begin(ssid, pass);
+    delay(6000);
   }
 
   // print the SSID of the network you're attached to:
