@@ -7,9 +7,9 @@
 GPIO PARAMETERS 
 */
 
-#define STATUSRED 8
-#define STATUSBLUE 12
-#define STATUSYELLOW 7
+#define STATUSORANGE 8
+#define STATUSGREEN 7
+#define STATUSYELLOW 12
 
 #define MOTOR1A 11
 #define MOTOR1B 10
@@ -39,10 +39,10 @@ int ambientThreshold = 115;
 int buzzerTone = 128;
 int battThreshold = 4;
 
-int blackThreshold = 110;
-int blueThreshold = 120;
-int redThreshold = 155;
-int yellowThreshold = 250;
+int blackThreshold = 130;
+int blueThreshold = 150;
+int redThreshold = 195;
+int yellowThreshold = 270;
 
 int turn_90_time = 1000;
 
@@ -74,8 +74,8 @@ void setup() {
   //Initialize Ports 
 
   //STATUS LEDS
-  pinMode(STATUSRED, OUTPUT);
-  pinMode(STATUSBLUE, OUTPUT);
+  pinMode(STATUSORANGE, OUTPUT);
+  pinMode(STATUSGREEN, OUTPUT);
   pinMode(STATUSYELLOW, OUTPUT);
 
   // COMM LEDS
@@ -119,12 +119,13 @@ void setup() {
   IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
   Serial.println(ip); */
-  runDebugSequence();
+  //runDebugSequence();
   digitalWrite(HEAD_LIGHTS, HIGH);
+  digitalWrite(STATUSGREEN, HIGH);
   digitalWrite(TAIL_LIGHTS, HIGH);
-  setMotor(1, 1, 255);
-  setMotor(2, 0, 255);
-  
+  /* setMotor(1, 1, 255);
+  setMotor(2, 0, 255); */
+  challenge1();
 }
 
 void loop() {
@@ -325,18 +326,18 @@ String getColorString(){
 
 
 void printDebug(){
-  /* Serial.print("RAW Color: ");
+  Serial.print("RAW Color: ");
   Serial.println(getColorRaw());
   Serial.print("Guess Color: ");
-  Serial.println(getColorString()); */
+  Serial.println(getColorString());
 
 
   /* Serial.println("Ambient Light:");
   Serial.println(getAmbient()); */
   
-  Serial.println("Collision Detection:");
+  //Serial.println("Collision Detection:");
   //Serial.println(getCollisDetect());
-  Serial.println(analogRead(A0));
+  //Serial.println(analogRead(A0));
   /* Serial.println("Battery voltage");
   Serial.println(getBatVoltage()); */
   
@@ -369,13 +370,13 @@ void runDebugSequence(){
 
   //BLINK ALL STATUS LEDS 3 times
   for(int i = 0; i < 3; i++){
-    digitalWrite(STATUSRED, HIGH);
-    digitalWrite(STATUSBLUE, HIGH);
+    digitalWrite(STATUSORANGE, HIGH);
+    digitalWrite(STATUSGREEN, HIGH);
     digitalWrite(STATUSYELLOW, HIGH);
     setBuzzer(true);
     delay(500);
-    digitalWrite(STATUSRED, LOW);
-    digitalWrite(STATUSBLUE, LOW);
+    digitalWrite(STATUSORANGE, LOW);
+    digitalWrite(STATUSGREEN, LOW);
     digitalWrite(STATUSYELLOW, LOW);
     setBuzzer(false);
     delay(500);
@@ -412,11 +413,11 @@ roll 1 = Bot 2 routine
  */
 void routineChallenge1(int roll){
   for(int i = 0; i < 3; i++){
-    digitalWrite(STATUSRED, HIGH);
-    digitalWrite(STATUSBLUE, HIGH);
+    digitalWrite(STATUSORANGE, HIGH);
+    digitalWrite(STATUSGREEN, HIGH);
     delay(100);
-    digitalWrite(STATUSRED, LOW);
-    digitalWrite(STATUSBLUE, LOW);
+    digitalWrite(STATUSORANGE, LOW);
+    digitalWrite(STATUSGREEN, LOW);
     delay(100);
   }
   if(roll == 0){
@@ -424,4 +425,16 @@ void routineChallenge1(int roll){
   }else if(roll == 1){
 
   }
+}
+
+void challenge1(){
+  Serial.println("STARTING CHALLENGE 5");
+  /* setMotor(1, 1, 100);
+  setMotor(2, 0, 95); */
+  setMotor(1, 1, 60);
+  setMotor(2, 0, 60);
+  delay(20000);
+  setMotor(1, 1, 0);
+  setMotor(2, 0, 0);
+  Serial.println("CHALLENGE 5 DONE");
 }
