@@ -1,8 +1,22 @@
+enum BotState {
+  C1_WAIT, 
+  C1_DIAGNOSTIC, 
+  C1_FIND_RED, 
+  C1_FOLLOW_RED, 
+  C1_FIND_BLUE,
+  C1_FOLLOW_BLUE,
+  C1_FIND_YELLOW, 
+  C1_RETURN_START, 
+  C1_END
+};
+
+
 /*
   Final Junior Design Program
 */
-//#include <ArduinoHttpClient.h>
-//#include <WiFi.h>
+#include <ArduinoHttpClient.h>
+#include <WiFi.h>
+
 /* 
 GPIO PARAMETERS 
 */
@@ -64,11 +78,11 @@ String clientID = "4A9EDB0160D5";
 String botID = clientID;
 
 
-/* WiFiClient wifi;
-WebSocketClient client = WebSocketClient(wifi, serverAddress, port); */
+WiFiClient wifi;
+WebSocketClient client = WebSocketClient(wifi, serverAddress, port); 
 
-/* int status = WL_IDLE_STATUS;
-int count = 0; */
+int status = WL_IDLE_STATUS;
+int count = 0; 
 
 void setup() {
   //Initialize Ports 
@@ -103,12 +117,13 @@ void setup() {
   pinMode(COLL_DETECT, INPUT);
 
   Serial.begin(9600);
-  /* while ( status != WL_CONNECTED) {
+  while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);                   // print the network name (SSID);
 
     // Connect to WPA/WPA2 network:
     status = WiFi.begin(ssid, pass);
+    delay(8000);
   }
 
   // print the SSID of the network you're attached to:
@@ -118,7 +133,7 @@ void setup() {
   // print your WiFi shield's IP address:
   IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
-  Serial.println(ip); */
+  Serial.println(ip); 
   runDebugSequence();
   digitalWrite(HEAD_LIGHTS, HIGH);
   digitalWrite(TAIL_LIGHTS, HIGH);
@@ -131,7 +146,7 @@ void loop() {
   printDebug();
   delay(1000);
   
-  /* Serial.println("starting WebSocket client");
+  Serial.println("starting WebSocket client");
   client.begin();
   client.beginMessage(TYPE_TEXT);
   client.print(clientID);
@@ -160,8 +175,9 @@ void loop() {
     if (messageSize > 0) {
       Serial.println("Received a message:");
       
-      string message = client.readString();
+      String message = client.readString();
       Serial.println(message);
+      processMessage(message);
       
       //if()
     }
@@ -194,10 +210,23 @@ void loop() {
     // wait 10ms
     delay(10);
   }
-  */
+  
 
   //Serial.println("disconnected");
  
+}
+
+void processMessage(String message) {
+  int prevPeriod = 0;
+  int nextPeriod = message.indexOf(".");
+  String clientID = message.substring(prevPeriod, nextPeriod);
+  if (clientID.indexOf("4A9EDB0160D5") != -1 || clientID.indexOf("DCF2BCAB6F0B") != -1) {
+    prevPeriod = nextPeriod;
+    nextPeriod = message.substring(nextPeriod + 1).indexOf(".") == 1 ? message.substring(nextPeriod + 1).indexOf(".") : message.length();
+    Serial.print(message.substring(prevPeriod, nextPeriod));
+
+  }
+
 }
 
 /*
@@ -424,4 +453,26 @@ void routineChallenge1(int roll){
   }else if(roll == 1){
 
   }
+}
+
+
+
+
+
+void splitStringByPeriod(char inputStr[], char *parts[], int &partCount) {
+    const char *delimiter = ".";
+    char *token;
+    int i = 0;
+
+    // Get the first token
+    token = strtok(inputStr, delimiter);
+
+    // Walk through other tokens
+    while (token != NULL) {
+        parts[i++] = token;  // store the token in the array
+        token = strtok(NULL, delimiter);  // get next token
+    }
+
+    // Update the part count
+    partCount = i;
 }
