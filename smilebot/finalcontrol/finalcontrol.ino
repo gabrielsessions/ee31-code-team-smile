@@ -25,13 +25,13 @@ GPIO PARAMETERS
 #define STATUSGREEN 7
 #define STATUSYELLOW 12
 
-#define MOTOR1A 11
-#define MOTOR1B 10
+#define MOTOR1A 10
+#define MOTOR1B 5
 
 #define MOTOR2A 9
 #define MOTOR2B 6
 
-#define IRA 5
+//#define IRA 5
 #define IRB 4
 
 #define BUZZER 3
@@ -115,8 +115,8 @@ void setup() {
   pinMode(AMBIENT_LIGHT, INPUT);
   pinMode(COLOR_SENSE, INPUT);
   pinMode(COLL_DETECT, INPUT);
-
   Serial.begin(9600);
+  /* 
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);                   // print the network name (SSID);
@@ -128,90 +128,32 @@ void setup() {
 
   // print the SSID of the network you're attached to:
   Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
+  Serial.println(WiFi.SSID()); */
 
   // print your WiFi shield's IP address:
-  IPAddress ip = WiFi.localIP();
+  /* IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
-  Serial.println(ip); */
+  Serial.println(ip);  */
   //runDebugSequence();
   digitalWrite(HEAD_LIGHTS, HIGH);
   digitalWrite(STATUSGREEN, HIGH);
   digitalWrite(TAIL_LIGHTS, HIGH);
   /* setMotor(1, 1, 255);
   setMotor(2, 0, 255); */
-  challenge1();
+  //challenge1();
+  runDebugSequence();
 }
 
 void loop() {
   printDebug();
-  delay(1000);
-  
-  Serial.println("starting WebSocket client");
-  client.begin();
-  client.beginMessage(TYPE_TEXT);
-  client.print(clientID);
-  client.endMessage();
-
-  while (client.connected()) {
-    if (count > 6000) {
-      count = 0;
-    }
-    if (count % 100 == 0) {
-      Serial.print("Sending hello ");
-      Serial.println(count);
-
-      // send a hello #
-      client.beginMessage(TYPE_TEXT);
-      client.print("hello ");
-      client.print(count);
-      client.endMessage();
-    }
-   
-    // increment count for next message
-    count++;
-
-    // check if a message is available to be received
-    int messageSize = client.parseMessage();
-    if (messageSize > 0) {
-      Serial.println("Received a message:");
-      
-      String message = client.readString();
-      Serial.println(message);
-      processMessage(message);
-      
-      //if()
-    }
-
-    //publish status messages
-    client.beginMessage(TYPE_TEXT);
-    client.print(botID + ".sensor.ambient." + getAmbient());
-    client.endMessage();
-
-    client.beginMessage(TYPE_TEXT);
-    client.print(botID + ".sensor.color.color." + getColorString());
-    client.endMessage();
-
-    client.beginMessage(TYPE_TEXT);
-    client.print(botID + ".sensor.color.raw." + getColor());
-    client.endMessage();
-
-    client.beginMessage(TYPE_TEXT);
-    client.print(botID + ".sensor.collision." + getCollisDetect());
-    client.endMessage();
-
-    client.beginMessage(TYPE_TEXT);
-    client.print(botID + ".sensor.battery." + getBatVoltage());
-    client.endMessage(); 
-    // getColorString()
-    // getAmbient()
-    // getCollisDetect()
-    // getBatVoltage()
-
-    // wait 10ms
-    delay(10);
-  }
-  
+  Serial.println("First TEST: ");
+  analogWrite(MOTOR1A, 70);
+  digitalWrite(MOTOR1B, LOW);
+  delay(3000);
+  Serial.println("Second TEST: ");
+  analogWrite(MOTOR1B, 70);
+  digitalWrite(MOTOR1A, LOW);
+  delay(3000);
 
   //Serial.println("disconnected");
  
@@ -355,17 +297,17 @@ String getColorString(){
 
 
 void printDebug(){
-  Serial.print("RAW Color: ");
+  /* Serial.print("RAW Color: ");
   Serial.println(getColorRaw());
   Serial.print("Guess Color: ");
   Serial.println(getColorString());
-
+ */
 
   /* Serial.println("Ambient Light:");
   Serial.println(getAmbient()); */
   
-  //Serial.println("Collision Detection:");
-  //Serial.println(getCollisDetect());
+  Serial.println("Collision Detection:");
+  Serial.println(getCollisDetect());
   //Serial.println(analogRead(A0));
   /* Serial.println("Battery voltage");
   Serial.println(getBatVoltage()); */

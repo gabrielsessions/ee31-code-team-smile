@@ -4,12 +4,12 @@ const int blue_led = 12;
 const int orng_led = 8;
 
 const int ylw_led = 12;
-const int leftF = 11;
+const int leftF = 5;
 const int leftB = 10;
-const int headlights = 72;
+const int headlights = 2;
 const int brakes = 13;
-const int rightF = 9;
-const int rightB = 6;
+const int rightF = 6;
+const int rightB = 9;
 //const int start_button = 11;
 const int left_sig = 1;
 const int right_sig = 0;
@@ -45,7 +45,7 @@ volatile float collide = 0;
 volatile float bat_lvl = 0;
 
 // state initialization
-volatile int state = 0;
+volatile int state = 1;
 
 /* WiFi and Server Declaration */
 // Team Smile ID (bot 2): 4A9EDB0160D5
@@ -112,6 +112,7 @@ void loop() {
     
     // cross track, turn around and find red path
     case 2:
+      Serial.println("CASE 2");
       forward(70);
       while(!detect_and_reverse());
       delay(BREAK_TIME);
@@ -120,7 +121,7 @@ void loop() {
       forward(70);
       while(!find_red());
       delay(BREAK_TIME);
-      state = 3;
+      //state = 3;
       break;
     
     // signal bot 2 to start, traverse red path
@@ -134,6 +135,8 @@ void loop() {
       for (int i = 0; i < 2; i++) {
         receive_light();
       }
+
+      
       // playAudioTrack(horn_honking_twice, 25);
       delay(500);
 
@@ -402,11 +405,12 @@ void stop() {
 }
 
 void forward(int speed) {
+  Serial.println("forward!");
   digitalWrite(brakes, LOW);
   digitalWrite(headlights, HIGH);
   digitalWrite(leftB, LOW);
   digitalWrite(rightB, LOW);
-  analogWrite(leftF, speed*offset);
+  analogWrite(leftF, speed);
   analogWrite(rightF, speed);
 }
 
