@@ -118,10 +118,6 @@ void setup() {
   pinMode(AMBIENT_LIGHT, INPUT);
   pinMode(COLOR_SENSE, INPUT);
   pinMode(COLL_DETECT, INPUT);
-<<<<<<< HEAD
-=======
-  
->>>>>>> fcf175e8593ac907eb09df3baa0f9fad95b82659
   Serial.begin(9600);
   /* 
   while ( status != WL_CONNECTED) {
@@ -140,7 +136,6 @@ void setup() {
   // print your WiFi shield's IP address:
   /* IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
-<<<<<<< HEAD
   Serial.println(ip);  */
   //runDebugSequence();
 
