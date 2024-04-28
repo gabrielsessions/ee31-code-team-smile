@@ -10,10 +10,6 @@ enum BotState {
   C1_END
 };
 
-#include <WiFi.h>
-#include <ArduinoHttpClient.h>
-
-
 /*
   Final Junior Design Program
 */
@@ -119,14 +115,14 @@ void setup() {
   pinMode(COLOR_SENSE, INPUT);
   pinMode(COLL_DETECT, INPUT);
   Serial.begin(9600);
-  /* 
+  
   while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);                   // print the network name (SSID);
 
     // Connect to WPA/WPA2 network:
     status = WiFi.begin(ssid, pass);
-    delay(8000);
+    delay(500);
   }
 
   // print the SSID of the network you're attached to:
@@ -134,22 +130,25 @@ void setup() {
   Serial.println(WiFi.SSID()); */
 
   // print your WiFi shield's IP address:
-  /* IPAddress ip = WiFi.localIP();
+  IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
-  Serial.println(ip);  */
+  Serial.println(ip);  
   //runDebugSequence();
 
-  Serial.println(ip); 
-  runDebugSequence();
+  //Serial.println(ip); 
+  /*
+  //runDebugSequence();
   digitalWrite(HEAD_LIGHTS, HIGH);
   digitalWrite(STATUSGREEN, HIGH);
   digitalWrite(TAIL_LIGHTS, HIGH);
   setMotor(1, 1, 255);
   setMotor(2, 0, 255);
   challenge1();
+  */
 }
 
 void loop() {
+  /*
   printDebug();
   Serial.println("First TEST: ");
   analogWrite(MOTOR1A, 70);
@@ -159,8 +158,10 @@ void loop() {
   analogWrite(MOTOR1B, 70);
   digitalWrite(MOTOR1A, LOW);
   delay(3000);
+  */
 
-  //Serial.println("disconnected");
+  
+  
  
 }
 
