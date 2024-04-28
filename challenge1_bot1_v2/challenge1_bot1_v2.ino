@@ -66,9 +66,9 @@ int buzzerTone = 128;
 int battThreshold = 4;
 
 int blackThreshold = 90;
-int blueThreshold = 160;
-int redThreshold = 210;
-int yellowThreshold = 270;
+int blueThreshold = 195;
+int redThreshold = 220;
+int yellowThreshold = 300;
 
 int turn_90_time = 1000;
 
@@ -79,6 +79,7 @@ const float ADCmax = 1023.0; // Max ADC value for a 10-bit ADC
 
 const int forwardLeftSpeed = 45;
 const int forwardRightSpeed = 33;
+const int collisDetectThreshold = 45;
 
 // END CONFIG
 
@@ -229,10 +230,19 @@ void processMessage(String message) {
       motorSpeeds[0] = forwardLeftSpeed;
     }
     if (params[2] == "b1followyellow") {
-      state = C1_FOLLOW_YELLOW;
-      setMotor(1, 0, forwardLeftSpeed);
-      setMotor(2, 0, 0);
-      motorSpeeds[0] = forwardLeftSpeed;
+      state = C1_FIND_YELLOW;
+      enteringState = true;
+      
+    }
+    if (params[2] == "b2finished") {
+      analogWrite(BUZZER, 128);
+      delay(50);
+      analogWrite(BUZZER, 0);
+      delay(50);
+      analogWrite(BUZZER, 128);
+      delay(50);
+      analogWrite(BUZZER, 0);
+      state = C1_END;
     }
   }
 
@@ -328,7 +338,13 @@ void stateAction() {
       motorSpeeds[1] = forwardRightSpeed;
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
-      enteringState = false;
+      enteringState = false;    }
+    if (getCollisDetect() < collisDetectThreshold) {
+      enteringState = true;
+      setMotor(1, 0, 0);
+      setMotor(2, 0, 0);
+      state = C1_FIND_RED;
+      return;
     }
     if (motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
       enteringState = true;
@@ -344,7 +360,7 @@ void stateAction() {
       delay(1800);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 1, forwardLeftSpeed);
-      delay(4500);
+      delay(4900);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       motorSpeeds[0] = 0;
@@ -379,7 +395,7 @@ void stateAction() {
   }
 
   if (state == C1_FOLLOW_RED) {
-    if (motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
+    if (motorSpeeds[0] == 0 && motorSpeeds[1] == 0 || getCollisDetect() < collisDetectThreshold) {
       analogWrite(BUZZER, 128);
       delay(50);
       analogWrite(BUZZER, 0);
@@ -388,11 +404,13 @@ void stateAction() {
       delay(50);
       analogWrite(BUZZER, 0);
       colorCount = 0;
-      state = C1_FIND_YELLOW;
-      enteringState = true;
+      //state = C1_FIND_YELLOW;
+      //enteringState = true;
+      state = C1_WAIT_FOR_BOT2_2;
       return;
 
     }
+
     if (getColorString() == "Red" && motorSpeeds[0] == 0) {
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, 0);
@@ -420,6 +438,8 @@ void stateAction() {
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       enteringState = false;
+      state = C1_FOLLOW_YELLOW;
+
       return;
     }
     
@@ -431,7 +451,7 @@ void stateAction() {
         setMotor(2, 0, 0);
         delay(3000);
         setMotor(1, 0, 0);
-        sendMessage("c1.b2continue");
+        sendMessage("c1.b2followblue");
         analogWrite(BUZZER, 128);
         delay(50);
         analogWrite(BUZZER, 0);
@@ -441,7 +461,8 @@ void stateAction() {
         analogWrite(BUZZER, 0);
         motorSpeeds[0] = 0;
         motorSpeeds[1] = 0;
-        state = C1_WAIT_FOR_BOT2_2;
+        state = C1_FOLLOW_YELLOW;
+        
       }
       
     }
@@ -450,7 +471,13 @@ void stateAction() {
   }
 
   if (state == C1_FOLLOW_YELLOW) {
-    if (motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
+    if (enteringState) {
+      setMotor(1, 0, forwardLeftSpeed);
+      setMotor(2, 0, 0);
+      motorSpeeds[0] = forwardLeftSpeed;
+      return;
+    }
+    if (getCollisDetect() < collisDetectThreshold || motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
       analogWrite(BUZZER, 128);
       delay(50);
       analogWrite(BUZZER, 0);
@@ -487,10 +514,11 @@ void stateAction() {
       delay(1800);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, 0);
-      delay(4000);
+      delay(3000);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       enteringState = false;
+      sendMessage("c1.b2followyellow");
       return;
     }
   }
@@ -569,7 +597,8 @@ String getColorString(){
 
 String getDebug() {
   return "state=" + String(state) + ".collision=" + String(getCollisDetect()) 
-    + ".color=" + getColorString() + "(" + getColorRaw() + ").day=" + String(isDay());
+    + ".color=" + getColorString() + "(" + getColorRaw() + ").day=" + String(analogRead(AMBIENT_LIGHT)) 
+    + ".voltage=" + String(analogRead(BATT_STATUS) * (Vref / 1023.0));
 }
 
 
