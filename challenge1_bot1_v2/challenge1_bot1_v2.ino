@@ -66,8 +66,8 @@ int buzzerTone = 128;
 int battThreshold = 4;
 
 int blackThreshold = 90;
-int blueThreshold = 195;
-int redThreshold = 220;
+int blueThreshold = 160;
+int redThreshold = 205;
 int yellowThreshold = 300;
 
 int turn_90_time = 1000;
@@ -77,9 +77,9 @@ const float R2 = 10000.0; // 10kΩ resistor
 const float Vref = 4.8; // Reference voltage (5V for most Arduinos)
 const float ADCmax = 1023.0; // Max ADC value for a 10-bit ADC
 
-const int forwardLeftSpeed = 45;
-const int forwardRightSpeed = 33;
-const int collisDetectThreshold = 45;
+const int forwardLeftSpeed = 60;
+const int forwardRightSpeed = 50;
+const int collisDetectThreshold = 60;
 
 // END CONFIG
 
@@ -225,9 +225,9 @@ void processMessage(String message) {
   else if (params[1] == "c1") {
     if (params[2] == "b1followred") {
       state = C1_FOLLOW_RED;
-      setMotor(1, 0, forwardLeftSpeed);
-      setMotor(2, 0, 0);
-      motorSpeeds[0] = forwardLeftSpeed;
+      setMotor(1, 0, 0);
+      setMotor(2, 0, forwardRightSpeed);
+      motorSpeeds[1] = forwardRightSpeed;
     }
     if (params[2] == "b1followyellow") {
       state = C1_FIND_YELLOW;
@@ -357,10 +357,10 @@ void stateAction() {
     if (enteringState) {
       setMotor(1, 1, forwardLeftSpeed);
       setMotor(2, 1, forwardRightSpeed);
-      delay(1800);
+      delay(1000);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 1, forwardLeftSpeed);
-      delay(4900);
+      delay(3200);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       motorSpeeds[0] = 0;
@@ -372,10 +372,10 @@ void stateAction() {
     if (getColorString() == "Red") {
       colorCount++;
       // Need to make sure color readings are consistent
-      if (colorCount > 50) {
+      if (colorCount > 25) {
         setMotor(1, 0, forwardLeftSpeed);
         setMotor(2, 0, 0);
-        delay(3000);
+        delay(1500);
         setMotor(1, 0, 0);
         sendMessage("c1.b2start");
         analogWrite(BUZZER, 128);
@@ -404,6 +404,10 @@ void stateAction() {
       delay(50);
       analogWrite(BUZZER, 0);
       colorCount = 0;
+      setMotor(1, 0, 0);
+      setMotor(2, 0, 0);
+      motorSpeeds[0] = 0;
+      motorSpeeds[1] = 0;
       //state = C1_FIND_YELLOW;
       //enteringState = true;
       state = C1_WAIT_FOR_BOT2_2;
@@ -431,14 +435,13 @@ void stateAction() {
     if (enteringState) {
       setMotor(1, 1, forwardLeftSpeed);
       setMotor(2, 1, forwardRightSpeed);
-      delay(1800);
+      delay(1000);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, 0);
-      delay(5500);
+      delay(2500);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       enteringState = false;
-      state = C1_FOLLOW_YELLOW;
 
       return;
     }
@@ -446,10 +449,10 @@ void stateAction() {
     if (getColorString() == "Yellow") {
       colorCount++;
       // Need to make sure color readings are consistent
-      if (colorCount > 50) {
+      if (colorCount > 30) {
         setMotor(1, 0, forwardLeftSpeed);
         setMotor(2, 0, 0);
-        delay(3000);
+        delay(1500);
         setMotor(1, 0, 0);
         sendMessage("c1.b2followblue");
         analogWrite(BUZZER, 128);
@@ -462,6 +465,8 @@ void stateAction() {
         motorSpeeds[0] = 0;
         motorSpeeds[1] = 0;
         state = C1_FOLLOW_YELLOW;
+        enteringState = true;
+        return;
         
       }
       
@@ -472,12 +477,14 @@ void stateAction() {
 
   if (state == C1_FOLLOW_YELLOW) {
     if (enteringState) {
-      setMotor(1, 0, forwardLeftSpeed);
-      setMotor(2, 0, 0);
-      motorSpeeds[0] = forwardLeftSpeed;
+      setMotor(1, 0, 0);
+      setMotor(2, 0, forwardRightSpeed*1.5);
+      motorSpeeds[0] = 0;
+      motorSpeeds[1] = forwardRightSpeed;
+      enteringState = false;
       return;
     }
-    if (getCollisDetect() < collisDetectThreshold || motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
+    else if (getCollisDetect() < collisDetectThreshold || motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
       analogWrite(BUZZER, 128);
       delay(50);
       analogWrite(BUZZER, 0);
@@ -491,45 +498,43 @@ void stateAction() {
       return;
 
     }
-    if (getColorString() == "Yellow" && motorSpeeds[0] == 0) {
-      setMotor(1, 0, forwardLeftSpeed);
-      setMotor(2, 0, 0);
-      motorSpeeds[0] = forwardLeftSpeed;
-      motorSpeeds[1] = 0;
+    if (getColorString() == "Yellow" && motorSpeeds[1] == 0) {
+      setMotor(1, 0, 0);
+      setMotor(2, 0, forwardRightSpeed);
+      motorSpeeds[1] = forwardRightSpeed;
+      motorSpeeds[0] = 0;
+      return;
 
     }
-    else if (getColorString() != "Yellow" && motorSpeeds[1] == 0) {
-      setMotor(1, 0, 0);
-      setMotor(2, 0, forwardRightSpeed*1.5);
-      motorSpeeds[0] = 0;
-      motorSpeeds[1] = forwardRightSpeed;
+    else if (getColorString() != "Yellow" && motorSpeeds[0] == 0) {
+      setMotor(1, 0, forwardLeftSpeed);
+      setMotor(2, 0, 0);
+      motorSpeeds[1] = 0;
+      motorSpeeds[0] = forwardLeftSpeed;
     }
     return;
   }
 
   if (state == C1_RETURN_START) {
+    
     if (enteringState) {
       setMotor(1, 1, forwardLeftSpeed);
       setMotor(2, 1, forwardRightSpeed);
-      delay(1800);
+      delay(900);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, 0);
-      delay(3000);
+      delay(1500);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       enteringState = false;
       sendMessage("c1.b2followyellow");
       return;
     }
+    
   }
 
 
 }
-
-void driveLeft() {
-
-}
-
 
 bool isDay(){
   return analogRead(AMBIENT_LIGHT) < ambientThreshold;
