@@ -366,7 +366,7 @@ void stateAction() {
       delay(1000);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 1, forwardLeftSpeed);
-      delay(2350);
+      delay(2500);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       motorSpeeds[0] = 0;
@@ -378,10 +378,10 @@ void stateAction() {
     if (getColorString() == "Red") {
       colorCount++;
       // Need to make sure color readings are consistent
-      if (colorCount > 21) {
+      if (colorCount > 14) {
         setMotor(1, 0, forwardLeftSpeed);
         setMotor(2, 0, 0);
-        delay(1500);
+        delay(2000);
         setMotor(1, 0, 0);
         sendMessage("c1.b2start");
         analogWrite(BUZZER, 128);
@@ -444,10 +444,10 @@ void stateAction() {
     if (enteringState) {
       setMotor(1, 1, forwardLeftSpeed);
       setMotor(2, 1, forwardRightSpeed);
-      delay(1000);
+      delay(2000);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, 0);
-      delay(2500);
+      delay(3200);
       setMotor(1, 0, forwardLeftSpeed);
       setMotor(2, 0, forwardRightSpeed);
       enteringState = false;
@@ -461,7 +461,7 @@ void stateAction() {
       if (colorCount > 11) {
         setMotor(1, 0, forwardLeftSpeed);
         setMotor(2, 0, 0);
-        delay(1500);
+        delay(2000);
         setMotor(1, 0, 0);
         analogWrite(BUZZER, 128);
         delay(50);

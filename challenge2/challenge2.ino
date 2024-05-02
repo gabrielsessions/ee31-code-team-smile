@@ -286,52 +286,73 @@ void setMotor(uint8_t num, uint8_t direction, uint8_t speed){
 
 void challenge2() {
   // Straight 12 inches
-  setMotor(1, 0, 60);
-  setMotor(2, 0, 50);
-  delay(2000);
+  forward(2000);
+  stop(500);
+
 
   // Rotate 180 degrees
   setMotor(1, 1, 60);
   setMotor(2, 0, 50);
-  delay(2500);
+  delay(2700);
+  stop(500);
 
   // Back 3 inches
-  setMotor(1, 1, 60);
-  setMotor(2, 1, 50);
-  delay(600);
+  backward(600);
+  stop(500);
 
   // Turn Left
-  setMotor(1, 0, 0);
-  setMotor(2, 0, 50);
-  delay(2600);
+  left(2800);
+  stop(500);
 
   // Turn Right
-  setMotor(1, 0, 60);
-  setMotor(2, 0, 0);
-  delay(2200);
+  right(2800);
+  stop(500);
 
   // Go Striaght for a while
-  setMotor(1, 0, 60);
-  setMotor(2, 0, 50);
-  delay(1800);
+  forward(1800);
+  stop(500);
 
   // Turn Right
-  setMotor(1, 0, 60);
-  setMotor(2, 0, 0);
-  delay(2000);
+  right(2000);
+  stop(500);
 
   // Go a little forward
-  setMotor(1, 0, 60);
-  setMotor(2, 0, 50);
-  delay(300);
+  forward(300);
+  stop(500);
 
 
   // Turn right
+  right(2000);
+  stop(100);
+
+}
+
+void stop(millis) {
+  setMotor(1, 0, 0);
+  setMotor(2, 0, 0);
+  delay(millis)
+}
+
+void right(millis) [
+  setMotor(1, 0, 0);
+  setMotor(2, 0, 60);
+  delay(2000);
+]
+
+void left(millis) {
   setMotor(1, 0, 60);
   setMotor(2, 0, 0);
   delay(2000);
+}
 
-  setMotor(1, 0, 0);
-  setMotor(2, 0, 0);
+void forward(millis) {
+  setMotor(1, 0, 60);
+  setMotor(2, 0, 50);
+  delay(millis);
+}
 
+void backward(millis) {
+  setMotor(1, 1, 60);
+  setMotor(2, 1, 60);
+  delay(millis);
 }
