@@ -170,10 +170,10 @@ void loop() {
     stateAction();
 
     
-    debugTicker = (debugTicker + 1) % 100;
+    /* debugTicker = (debugTicker + 1) % 100;
     if (debugTicker == 0) {
       sendMessage(getDebug());
-    }
+    } */
     
     
 

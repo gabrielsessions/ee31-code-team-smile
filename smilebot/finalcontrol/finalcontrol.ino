@@ -68,20 +68,23 @@ const float ADCmax = 1023.0; // Max ADC value for a 10-bit ADC
 
 ///////please enter your sensitive data in the Secret tab/arduino_secrets.h
 /////// WiFi Settings ///////
+const String TeamSmileID = "4A9EDB0160D5";
+// Team Infra Red ID (bot 1): DCF2BCAB6F0B
+const String TeamInfraRedID = "DCF2BCAB6F0B";
+#include <WiFi.h>
+#include <ArduinoHttpClient.h>
+
 char ssid[] = "junior";
 char pass[] = "designdesign";
 
-char serverAddress[] = "34.173.203.110";  // server address
+char serverAddress[] = "34.173.203.110";
 int port = 80;
-String clientID = "4A9EDB0160D5";
-String botID = clientID;
-
 
 WiFiClient wifi;
-WebSocketClient client = WebSocketClient(wifi, serverAddress, port); 
-
+WebSocketClient client = WebSocketClient(wifi, serverAddress, port);
+String clientID = TeamSmileID;
 int status = WL_IDLE_STATUS;
-int count = 0; 
+
 
 void setup() {
   //Initialize Ports 
@@ -115,8 +118,9 @@ void setup() {
   pinMode(COLOR_SENSE, INPUT);
   pinMode(COLL_DETECT, INPUT);
   Serial.begin(9600);
+  //SetupServerConnection();
   
-  while ( status != WL_CONNECTED) {
+  /* while ( status != WL_CONNECTED) {
     Serial.print("Attempting to connect to Network named: ");
     Serial.println(ssid);                   // print the network name (SSID);
 
@@ -127,12 +131,12 @@ void setup() {
 
   // print the SSID of the network you're attached to:
   Serial.print("SSID: ");
-  Serial.println(WiFi.SSID()); */
+  Serial.println(WiFi.SSID());
 
   // print your WiFi shield's IP address:
   IPAddress ip = WiFi.localIP();
   Serial.print("IP Address: ");
-  Serial.println(ip);  
+  Serial.println(ip);   */
   //runDebugSequence();
 
   //Serial.println(ip); 
@@ -143,11 +147,29 @@ void setup() {
   digitalWrite(TAIL_LIGHTS, HIGH);
   setMotor(1, 1, 255);
   setMotor(2, 0, 255);
-  challenge1();
+  
   */
+  //challenge5();
+  
+  digitalWrite(HEAD_LIGHTS, true);
+  digitalWrite(TAIL_LIGHTS, true);
+  challenge2();
 }
 
 void loop() {
+
+  if(isBatLow()){
+    for(int i = 0; i < 3; i++){
+      digitalWrite(STATUSYELLOW, HIGH);
+      setBuzzer(true);
+      delay(500);
+      digitalWrite(STATUSYELLOW, LOW);
+      setBuzzer(false);
+      delay(500);
+    }
+  }
+  //printDebug();
+  delay(3000);
   /*
   printDebug();
   Serial.println("First TEST: ");
@@ -404,14 +426,29 @@ void routineChallenge1(int roll){
   }
 }
 
-void challenge1(){
+void challenge2(){
+  //move forward twelve inches
+  setMotor(1, 0, 70);
+  setMotor(2, 0, 70);
+  delay(1000);
+  setMotor(1, 0, 0);
+  setMotor(2, 0, 0);
+  //stop, turn around 180°
+  //stop, move backwards three inches
+  //stop, turn left, 
+  //turn right, 
+  //turn right
+  //turn right to end up as close as possible to the  bot’s starting position.
+}
+
+void challenge5(){
   Serial.println("STARTING CHALLENGE 5");
   /* setMotor(1, 1, 100);
   setMotor(2, 0, 95); */
-  setMotor(1, 1, 60);
-  setMotor(2, 0, 60);
+  setMotor(1, 0, 30);
+  setMotor(2, 0, 27);
   delay(20000);
-  setMotor(1, 1, 0);
+  setMotor(1, 0, 0);
   setMotor(2, 0, 0);
   Serial.println("CHALLENGE 5 DONE");
 
@@ -434,4 +471,95 @@ void splitStringByPeriod(char inputStr[], char *parts[], int &partCount) {
 
     // Update the part count
     partCount = i;
+}
+
+void SetupServerConnection() {
+  while ( status != WL_CONNECTED) {
+    Serial.print("Attempting to connect to Network named: ");
+    Serial.println(ssid);
+
+    // Connect to WPA/WPA2 network:
+    status = WiFi.begin(ssid, pass);
+  }
+
+  // print the SSID of the network you're attached to:
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+
+  // print WiFi shield's IP address:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+
+  Serial.println("Starting WebSocket client");
+  client.begin();
+  client.beginMessage(TYPE_TEXT);
+  client.print(clientID);
+  client.endMessage();
+}
+
+void waitForServerMessage(String message) {
+  volatile bool messageReceived = false;
+  while(!messageReceived) {
+    String receivedStr = receiveMessageFromServer();
+    if (receivedStr == message) {
+      messageReceived = true;
+      return;
+    }
+  }
+}
+
+// call this function to wait to receive a message 
+// from Team Smile (4A9EDB0160D5) on the server
+// returns the message received
+String receiveMessageFromServer() {
+  if (client.connected()) {
+      // check if a message is available to be received
+      int messageSize = client.parseMessage();
+
+      String command = "";
+      if (messageSize > 0) {
+        String message = client.readString();
+        String companion_id = message.substring(0, 12);
+        // Serial.println(companion_id);
+        String web_client = message.substring(0, 22);
+        int pos = 11;
+
+        if(companion_id == TeamInfraRedID || web_client == "WebClient_" + TeamInfraRedID){ //correct companion id 
+          // increase space in string array until reach white space
+          while(message[pos] != '.') {
+            pos++;
+          }
+          // take position after white space until the end and that is the message
+          command = message.substring(pos + 1); 
+        }
+
+        if (command.length() > 0){
+          Serial.println("Received the command: ");
+          Serial.println(command);
+          return command;
+        }
+      }
+    }
+
+    Serial.println("disconnected");
+    return "disconnected";
+}
+
+// call this function to send a message to server
+void sendMessageToServer(String message) {
+  if (client.connected()) {
+    client.beginMessage(TYPE_TEXT);
+    client.print(message);
+    client.endMessage();
+  }
+}
+
+void challenge4(){
+  setMotor(1, 0, 50);
+  setMotor(2, 0, 50);
+  waitForServerMessage("c4.SmileDetected");
+  sendMessageToServer("c4.InfraRedDetected");
+  setMotor(1, 0, 0);
+  setMotor(2, 0, 0);
 }
