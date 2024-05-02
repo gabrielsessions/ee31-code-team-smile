@@ -152,7 +152,40 @@ void setup() {
 
 }
 
+
+void stopMotors(int millis) {
+  setMotor(1, 0, 0);
+  setMotor(2, 0, 0);
+  delay(millis);
+  //waitForMessage();
+}
+
+void right(int millis) {
+  setMotor(1, 0, 0);
+  setMotor(2, 0, 60);
+  delay(2000);
+}
+
+void left(int millis) {
+  setMotor(1, 0, 60);
+  setMotor(2, 0, 0);
+  delay(2000);
+}
+
+void forward(int millis) {
+  setMotor(1, 0, 60);
+  setMotor(2, 0, 50);
+  delay(millis);
+}
+
+void backward(int millis) {
+  setMotor(1, 1, 60);
+  setMotor(2, 1, 60);
+  delay(millis);
+}
  
+
+
 void sendMessage(String message) {
   client.beginMessage(TYPE_TEXT);
   client.print(message);
@@ -234,6 +267,7 @@ void processMessage(String message) {
 
 }
 
+
 void splitString(String s, String output[], int &count) {
   count = 0; // Initialize count of elements
   int startPos = 0; // Starting position for search
@@ -283,76 +317,59 @@ void setMotor(uint8_t num, uint8_t direction, uint8_t speed){
 }
 
 
-
 void challenge2() {
   // Straight 12 inches
-  forward(2000);
-  stop(500);
+  forward(1900);
+  stopMotors(500);
 
 
   // Rotate 180 degrees
   setMotor(1, 1, 60);
   setMotor(2, 0, 50);
-  delay(2700);
-  stop(500);
+  delay(3050);
+  stopMotors(500);
 
   // Back 3 inches
   backward(600);
-  stop(500);
+  stopMotors(500);
 
   // Turn Left
-  left(2800);
-  stop(500);
+  left(4500);
+  stopMotors(500);
+
+  // Go forward a tiny bit
+  forward(500);
+  stopMotors(500);
 
   // Turn Right
-  right(2800);
-  stop(500);
+  right(1200);
+  stopMotors(500);
 
-  // Go Striaght for a while
-  forward(1800);
-  stop(500);
+  // Go Straight for a while
+  forward(1700);
+  stopMotors(500);
 
   // Turn Right
-  right(2000);
-  stop(500);
+  right(800);
+  stopMotors(500);
 
   // Go a little forward
   forward(300);
-  stop(500);
+  stopMotors(500);
 
 
   // Turn right
-  right(2000);
-  stop(100);
+  right(500);
+  stopMotors(100);
 
 }
 
-void stop(millis) {
-  setMotor(1, 0, 0);
-  setMotor(2, 0, 0);
-  delay(millis)
+void waitForMessage() {
+  int messageSize = client.parseMessage();
+
+  while (messageSize < 1) {
+    delay(10);
+    messageSize = client.parseMessage();
+  }
 }
 
-void right(millis) [
-  setMotor(1, 0, 0);
-  setMotor(2, 0, 60);
-  delay(2000);
-]
-
-void left(millis) {
-  setMotor(1, 0, 60);
-  setMotor(2, 0, 0);
-  delay(2000);
-}
-
-void forward(millis) {
-  setMotor(1, 0, 60);
-  setMotor(2, 0, 50);
-  delay(millis);
-}
-
-void backward(millis) {
-  setMotor(1, 1, 60);
-  setMotor(2, 1, 60);
-  delay(millis);
-}

@@ -78,7 +78,7 @@ const float Vref = 4.8; // Reference voltage (5V for most Arduinos)
 const float ADCmax = 1023.0; // Max ADC value for a 10-bit ADC
 
 const int forwardLeftSpeed = 60;
-const int forwardRightSpeed = 46;
+const int forwardRightSpeed = 44;
 const int collisDetectThreshold = 100;
 
 // END CONFIG
@@ -169,11 +169,12 @@ void loop() {
 
     stateAction();
 
-    
+    /*
     debugTicker = (debugTicker + 1) % 100;
     if (debugTicker == 0) {
       sendMessage(getDebug());
     }
+    */
     
     
 
@@ -530,18 +531,20 @@ void stateAction() {
       setMotor(1, 1, forwardLeftSpeed);
       setMotor(2, 1, forwardRightSpeed);
       delay(900);
-      setMotor(1, 0, forwardLeftSpeed);
-      setMotor(2, 0, 0);
-      delay(1500);
-      setMotor(1, 0, forwardLeftSpeed);
+      setMotor(1, 1, 0);
       setMotor(2, 0, forwardRightSpeed);
+      delay(2250);
+      setMotor(1, 1, forwardLeftSpeed);
+      setMotor(2, 1, forwardRightSpeed);
+      delay(1600);
+      setMotor(1, 0, 0);
+      setMotor(2, 0, 0);
       enteringState = false;
       return;
     }
 
     if (getCollisDetect() < collisDetectThreshold || motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
-      setMotor(1, 0, 0);
-      setMotor(2, 0, 0);
+      
     }
     
   }

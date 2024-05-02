@@ -78,7 +78,7 @@ const float Vref = 4.8; // Reference voltage (5V for most Arduinos)
 const float ADCmax = 1023.0; // Max ADC value for a 10-bit ADC
 
 const int forwardLeftSpeed = 60;
-const int forwardRightSpeed = 50;
+const int forwardRightSpeed = 60;
 const int collisDetectThreshold = 60;
 
 // END CONFIG
@@ -234,7 +234,7 @@ void processMessage(String message) {
       delay(50);
       analogWrite(BUZZER, 0);
       sendMessage("c1.b1followred");
-      delay(5000);
+      delay(6500);
       enteringState = true;
       state = C1_DRIVE_TO_WALL;
       
@@ -381,7 +381,7 @@ void stateAction() {
     if (getColorString() == "Blue") {
       colorCount++;
       // Need to make sure color readings are consistent
-      if (colorCount > 40) {
+      if (colorCount > 55) {
         setMotor(1, 0, 0);
         setMotor(2, 0, forwardRightSpeed);
         delay(1500);
@@ -538,21 +538,19 @@ void stateAction() {
       setMotor(1, 1, forwardLeftSpeed);
       setMotor(2, 1, forwardRightSpeed);
       delay(900);
+      setMotor(1, 1, forwardLeftSpeed);
+      setMotor(2, 0, 0);
+      delay(2250);
+      setMotor(1, 1, forwardLeftSpeed);
+      setMotor(2, 1, forwardRightSpeed);
+      delay(1600);
       setMotor(1, 0, 0);
-      setMotor(2, 0, forwardRightSpeed);
-      delay(1500);
-      setMotor(1, 0, forwardLeftSpeed);
-      setMotor(2, 0, forwardRightSpeed);
+      setMotor(2, 0, 0);
       enteringState = false;
       return;
     }
 
-    if (getCollisDetect() < collisDetectThreshold || motorSpeeds[0] == 0 && motorSpeeds[1] == 0) {
-      setMotor(1, 0, 0);
-      setMotor(2, 0, 0);
-      sendMessage("c1.b2finished");
-      state = C1_END;
-    }
+    
     
   }
 
